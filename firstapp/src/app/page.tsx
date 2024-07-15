@@ -1,12 +1,12 @@
-import { Button } from "@mantine/core";
-import Image from "next/image";
+import { AppLayout } from '@/components/AppLayout';
+
 
 export default function Home() {
   return (
-    <h1>
-      Bagaicha Restro & Bar
-      <Button> Click Me</Button>
-    </h1>  );
+    <AppLayout>
+      Dashboard
+    </AppLayout>
+  );
 
 
   }
