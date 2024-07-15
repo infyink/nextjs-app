@@ -1,11 +1,10 @@
-import { AppLayout } from '@/components/AppLayout';
+import { AppLayout } from "../../components/AppLayout";
+
 
 
 export default function Home() {
   return (
-    <AppLayout>
-      Dashboard
-    </AppLayout>
+    <AppLayout>Dashboard</AppLayout>
   );
 
 
