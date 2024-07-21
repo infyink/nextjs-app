@@ -1,0 +1,285 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL") // URL for connecting to the database
+  directUrl = env("DIRECT_URL") // Direct URL for the database connection
+}
+
+// ================================================================
+// AUTH MODELS
+// ================================================================
+
+// Account model for authentication providers (e.g., Google, Facebook)
+model Account {
+  id                String  @id @default(cuid()) // Unique identifier for the account
+  userId            String // User ID to link with User model
+  type              String // Type of authentication provider
+  provider          String // Name of the provider (e.g., Google)
+  providerAccountId String // Provider-specific account ID
+  refresh_token     String? @db.Text // Refresh token (optional)
+  access_token      String? @db.Text // Access token (optional)
+  expires_at        Int? // Token expiration timestamp (optional)
+  token_type        String? // Type of token (optional)
+  scope             String? // OAuth scopes (optional)
+  id_token          String? @db.Text // ID token (optional)
+  session_state     String? // Session state (optional)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId]) // Ensure unique provider and account ID combination
+}
+
+// Enum for user roles
+enum UserRole {
+  ADMIN // Administrator role
+  USER // Regular user role
+}
+
+// User model for application users
+model User {
+  id            String    @id @default(cuid()) // Unique identifier for the user
+  name          String? // User's name (optional)
+  email         String?   @unique // User's email (unique, optional)
+  emailVerified DateTime? // Email verification timestamp (optional)
+  image         String? // URL to the user's profile image (optional)
+  password      String? // User's password (optional)
+  role          UserRole  @default(USER) // User's role (default to USER)
+  accounts      Account[] // Relation to the Account model
+  // sessions      Session[]                        // Uncomment if using sessions
+}
+
+// VerificationToken model for email verification and password resets
+model VerificationToken {
+  identifier String // Identifier for the token (e.g., email)
+  token      String   @unique // Unique token
+  expires    DateTime // Token expiration timestamp
+
+  @@unique([identifier, token]) // Ensure unique combination of identifier and token
+}
+
+// ================================================================
+// RESTAURANT MODELS
+// ================================================================
+
+// ================================================================
+// RESTAURANT MODELS
+// ================================================================
+
+// Enum for employee positions
+enum Position {
+  ADMIN
+  MANAGER
+  CHEF
+  HEAD_CHEF
+  SERVICE
+  CASHIER
+  CLEANER
+  KITCHEN_HELPER
+}
+
+// Enum for payment types
+enum PaymentType {
+  CASH
+  CARD
+  QR
+  CREDIT
+}
+
+// Enum for payment statuses
+enum PaymentStatus {
+  PAID
+  CREDIT
+  PARTIAL
+}
+
+enum ExpenseEntityType {
+  SUPPLIER
+  PERSONAL
+}
+
+enum ExpenseType {
+  PERSONAL
+  BUSINESS
+}
+
+enum ItemCategory {
+  KITCHEN
+  BAR
+  CAFE
+  MISCELLANEOUS
+  GROCERIES
+}
+
+model Item {
+  id                  String                @id @default(cuid())
+  itemDesc            String
+  itemDescSecondary   String?
+  standardUOM         String
+  comments            String?
+  expense             Expense[] // One-to-many: one product can have multiple expenses records
+  credit              Credit[]
+  itemCategory        ItemCategory          @default(KITCHEN)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  isActive            Boolean               @default(true)
+  MenuItemIngredients MenuItemIngredients[]
+}
+
+model Supplier {
+  id                    String    @id @default(cuid())
+  supplierName          String
+  supplierNameSecondary String?
+  companyName           String? // supplier ko company
+  address               String?
+  contactPhone          String?
+  currencyCode          String?
+  contactEmail          String?
+  comments              String?
+  expenses              Expense[] // One-to-many: one supplier can have multiple expense entries
+  credit                Credit[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  isActive              Boolean   @default(true)
+}
+
+// Main table for expense staff expense tracking.
+model Expense {
+  id              String        @id @default(cuid())
+  transactionDate DateTime
+  itemId          String
+  supplierId      String
+  quantity        Int
+  amount          Float
+  invoice         Float
+  paymentType     PaymentType
+  paymentStatus   PaymentStatus
+  comments        String?
+  employeeId      String
+  item            Item          @relation(fields: [itemId], references: [id])
+  supplier        Supplier      @relation(fields: [supplierId], references: [id])
+  employee        Employee      @relation(fields: [employeeId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  reviewed        Boolean       @default(false)
+  accepted        Boolean       @default(false)
+}
+
+model Employee {
+  id                     String    @id @default(cuid())
+  name                   String
+  contactNumber          String?
+  temporaryAddress       String?
+  permanentAddress       String?
+  position               Position
+  joinDate               DateTime
+  companyRentalProvision Boolean?
+  terminationDate        DateTime  @default("2100-12-31T23:59:59Z")
+  expenses               Expense[]
+  orders                 Order[]
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  isActive               Boolean   @default(true)
+}
+
+model Credit {
+  id         String   @id @default(cuid())
+  itemId     String
+  supplierId String
+  amount     Float
+  creditDate DateTime
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  item       Item     @relation(fields: [itemId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isActive   Boolean  @default(true)
+}
+
+model Customer {
+  id            String    @id @default(cuid())
+  name          String
+  email         String?   @unique
+  phoneNumber   String?   @unique
+  dob           DateTime?
+  lastVisitDate DateTime? @default(now())
+  orders        Order[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  isActive      Boolean   @default(true)
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  customerId  String
+  employeeId  String
+  totalAmount Float
+  date        DateTime
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  employee    Employee?   @relation(fields: [employeeId], references: [id])
+  orderItems  OrderItem[]
+  comments    String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  isActive    Boolean     @default(true)
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  menuItemId String
+  quantity   Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  order      Order    @relation(fields: [orderId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isActive   Boolean  @default(true)
+}
+
+model MenuItem {
+  id          String                @id @default(cuid())
+  name        String
+  price       Float
+  category    String
+  subcategory String?
+  ingredients MenuItemIngredients[]
+  orderItems  OrderItem[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  isActive    Boolean               @default(true)
+}
+
+// suppose menu item momo ho vane momo k k tatwa le bancha vanne kura.
+model MenuItemIngredients {
+  id         String   @id @default(cuid())
+  menuItemId String
+  productId  String
+  quantity   Int
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  product    Item     @relation(fields: [productId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isActive   Boolean  @default(true)
+}
+
+model Revenue {
+  id        String   @id @default(cuid())
+  amount    Float
+  date      DateTime
+  source    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+}
+
+model GeneralExpense {
+  id        String   @id @default(cuid())
+  amount    Float
+  date      DateTime
+  category  String
+  desc      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  isActive  Boolean  @default(true)
+}

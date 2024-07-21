@@ -1,7 +1,8 @@
 'use client';
 import { AppShell, Burger, Box, Text, Group, Skeleton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-// import { MantineLogo } from '@mantinex/mantine-logo';
+import { Navbar } from "./Navbar/Navbar";
+import Image from "next/image";
 
 interface Props {
   children: React.ReactNode;
@@ -34,21 +35,31 @@ export function AppLayout({ children }: Props) {
             visibleFrom="sm"
             size="sm"
           /> 
+          <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
+              <Image
+                src="/bagaichaLogo.png"
+                width={100}
+                height={70}
+                className="hidden md:block"
+                alt="Bagaicha Logo"
+              /> 
+              {/* <Image
+                src="/bagaichaLogo.png"
+                width={40}
+                height={30}
+                className="hidden md:hidden"
+                alt="Bagaicha Logo"
+              />  */}
+          </div>        
+          
           <Text size="lg" fw = "bold">
-                Bagaicha Restro & Bar
+                Bagaicha Restro And Bar
           </Text>
-          {/* <MantineLogo size={30}
-           /> */}
+
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        {/* Navbar */}
-        navbar
-        {Array(15)
-          .fill(0)
-          .map((_, index) => (
-            <Skeleton key={index} h={28} mt="sm" animate={false} />
-          ))}
+        <Navbar/>
       </AppShell.Navbar>
       <AppShell.Main>
         <Box m="md">{children}</Box>

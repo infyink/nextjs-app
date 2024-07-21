@@ -1,6 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
-import { Group, Code, Button } from '@mantine/core';
 import {
     IconDashboard,
     IconList,
@@ -12,10 +10,12 @@ import {
 import Link from 'next/link';
 import classes from './Navbar.module.css'
 import { usePathname } from 'next/navigation';
+import { Group, Code, Button } from '@mantine/core';
+
 
 const data = [
 { link: '/ ', label: 'Dashboard', icon: IconDashboard },
-{ link: '/product_list', label: 'Product List', icon: IconList },
+{ link: '/product-list', label: 'Product List', icon: IconList },
 { link: '/expense-tracking', label: 'Expense Tracking', icon: IconReceiptRupee },
 { link: '/transactions', label: 'Create Bill', icon: IconFileInvoice }
 ];
@@ -24,15 +24,13 @@ export const Navbar = () => {
     const pathname = usePathname();
     const links = data.map((item) => (
         <Link
-        className={classes.link}
-        data-active = {item.link == pathname || undefined}
-        href={item.link}
-        key = {item.label}
+            className={classes.link}
+            data-active = {item.link == pathname || undefined}
+            href={item.link}
+            key = {item.label}
         >
-        <item.icon className={classes.linkIcon} stroke ={1.5} />
-        <span>item.label</span>
-
-
+        <item.icon className={classes.linkIcon} stroke ={2.5} />
+        <span>{item.label}</span>
         </Link>
 
     ));
@@ -40,11 +38,11 @@ export const Navbar = () => {
         <nav className = {classes.navbar}>
             <div className = {classes.navbarMain}>
                 <Group className= {classes.header} justify="space-between">
-                    Bagaicha Restro & Bar
+                    Bagaicha Restro And Bar
                 </Group>
                 {links}
             </div>
-
+            
             <div className = {classes.footer}>
                 <Link 
                     href = "/profile"
@@ -52,15 +50,18 @@ export const Navbar = () => {
                     onClick={(event) => event.preventDefault()}
                 >
                     <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5}/>
-                    <span>Profile</span>
+                    <span>Change Account</span>
                 </Link>
 
-                <Button
-                variant = "transparent"
-                leftSection = {<IconLogout className = {classes.linkIcon} stroke = {1.5}/>}
+                <Link 
+                    href = "#"
+                    className = {classes.link}
+                    onClick={(event) => event.preventDefault()}
                 >
-                    Logout
-                </Button>
+                    <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5}/>
+                    <span>Logout</span>
+                </Link>
+
 
             </div>
         </nav>
