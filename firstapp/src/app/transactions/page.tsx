@@ -6,7 +6,7 @@ import SalesTrackingForm from "../../../components/transactions/SalesForm";
 const TransactionPage = () => {
   return (
     <AppLayout>
-      <h1><SalesTrackingForm></SalesTrackingForm></h1>
+      <SalesTrackingForm></SalesTrackingForm>
     </AppLayout>
   );
 };

@@ -1,7 +1,7 @@
 import { Alert, Text } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import React from "react";
-import { formatDate } from "../functions/format-date";
+import { formatDate } from "../../functions/format-date";
 
 export const ResultNotice = () => {
   const searchParams = useSearchParams();

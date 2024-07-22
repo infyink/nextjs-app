@@ -1,87 +1,75 @@
 "use client";
-
-import {
-  Container,
-  TextInput,
-  NumberInput,
-  Button,
-  Group,
-  Box,
-  Card,
-  Divider,
-  Paper,
-  ActionIcon,
-  Textarea,
-  Select,
-} from "@mantine/core";
-import { DateInput } from "@mantine/dates";
-import { IconTrash, IconPlus } from "@tabler/icons-react";
-
-import { useState } from "react";
-import classes from "./salesform.module.css";
-import { tablenames } from "../../consts";
+import React, { useState, useEffect } from 'react';
+import { Container, TextInput, NumberInput, Button, Group, Box, Card, Divider, Paper, ActionIcon, Textarea, Select } from '@mantine/core';
+import { DateInput } from '@mantine/dates';
+import { IconTrash, IconPlus } from '@tabler/icons-react';
+import classes from './salesform.module.css';
+import { tablenames } from '../../consts';
+import MenuItemSelector from './menuItem/MenuItemSelector'; // Ensure path is correct
+import { handleItemChange, addItemRow, deleteItemRow, calculateTotalAmount, handleSubmit, handleDateChange } from '../../functions/menu-form'; // Ensure import paths are correct
+import CustomerDetails from './CustomerDetails';
+import supabase from '../../lib/data';
 
 export default function SalesTrackingForm() {
   const [items, setItems] = useState([
-    { menuItem: "", quantity: 1, unitPrice: 0, totalItemPrice: 0 },
+    { menuItem: '', quantity: 1, unitPrice: 0, totalItemPrice: 0 },
   ]);
-  const [transactionDate, setTransactionDate] = useState<Date | null>(
-    new Date()
-  );
-  const [invoiceId, setInvoiceId] = useState("");
-  const [notes, setNotes] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
+  const [transactionDate, setTransactionDate] = useState<Date | null>(new Date());
+  const [invoiceId, setInvoiceId] = useState('');
+  const [notes, setNotes] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
   const [totalAmount, setTotalAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
-  const [selectedTable, setSelectedTable] = useState("");
+  const [selectedTable, setSelectedTable] = useState('');
+  const [formattedMenuItems, setFormattedMenuItems] = useState<any[]>([]);
 
-  const handleItemChange = (index: number, field: string, value: any) => {
-    const updatedItems = items.map((item, i) =>
-      i === index ? { ...item, [field]: value } : item
-    );
-    setItems(updatedItems);
-    calculateTotalAmount(updatedItems);
-  };
+  // Group items by category and subcategory
+  const groupMenuItems = () => {
+    const groupedItems: { [key: string]: { [key: string]: any[] } } = {};
 
-  const addItemRow = () => {
-    setItems([
-      ...items,
-      { menuItem: "", quantity: 1, unitPrice: 0, totalItemPrice: 0 },
-    ]);
-  };
-
-  const deleteItemRow = (index: number) => {
-    const updatedItems = items.filter((_, i) => i !== index);
-    setItems(updatedItems);
+    formattedMenuItems.forEach((item) => {
+      if (!groupedItems[item.category]) {
+        groupedItems[item.category] = {};
+      }
+      if (!groupedItems[item.category][item.subcategory]) {
+        groupedItems[item.category][item.subcategory] = [];
+      }
+      groupedItems[item.category][item.subcategory].push(item);
+    });
+    return groupedItems;
   };
 
-  const calculateTotalAmount = (items: any[]) => {
-    const total = items.reduce(
-      (sum, item) => sum + item.quantity * item.unitPrice,
-      0
-    );
-    setTotalAmount(total);
-  };
+  const groupedMenuItems = groupMenuItems();
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    const finalAmount = totalAmount - (totalAmount * discount) / 100;
-    alert(`Total amount after discount: NRs. ${finalAmount.toFixed(2)}`);
-  };
-  const selectStyles = {
-    label: {
-      color: "gray",
-      fontStyle: "italic",
-    },
-  };
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      const { data, error } = await supabase.from('MenuItem').select('*');
+      if (error) {
+        console.error('Error fetching menu items:', error);
+      } else {
+        console.log('Fetched menu items:', data); // Debug fetched data
+        const formatted = data.map((item: any) => ({
+          value: item.id,
+          category: item.category,
+          subcategory: item.subcategory,
+          name: item.name,
+        }));
+        setFormattedMenuItems(formatted);
+      }
+    };
+  
+    fetchMenuItems();
+  }, []);
 
-  const handleDateChange = (value: Date | null) => {
-    if (value) {
-      setTransactionDate(value);
-    }
+  const handleItemChangeWrapper = (index: number, field: string, value: any) => {
+        handleItemChange(index, field, value, items, setItems, calculateTotalAmount);
+   
   };
+  
+  
+
   return (
     <Container size="lg" className={classes.container}>
       <Card
@@ -95,24 +83,20 @@ export default function SalesTrackingForm() {
           Create Bill
         </Paper>
         <Divider my="sm" />
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => handleSubmit(e, totalAmount, discount)}>
+          {" "}
           <Box mb="md">
             <Group mb="md" grow>
               <Select
-                // label="Select Table"
                 label={
                   <span className={classes.labelStyles}>Select Table</span>
                 }
                 placeholder="Choose a table"
                 value={selectedTable}
-                // onChange={setSelectedTable}
+                onChange={(value: any) => setSelectedTable(value || "")}
                 data={tablenames}
                 required
-                styles={selectStyles}
               />
-
-              {/* <Box></Box> */}
-
               <TextInput
                 label={<span className={classes.labelStyles}>Invoice ID</span>}
                 placeholder="Invoice ID"
@@ -126,12 +110,13 @@ export default function SalesTrackingForm() {
                 }
                 placeholder="Transaction Date"
                 value={transactionDate}
-                onChange={handleDateChange}
+                onChange={(value) =>
+                  handleDateChange(value, setTransactionDate)
+                }
                 required
               />
             </Group>
           </Box>
-
           <Textarea
             label={
               <span className={classes.labelStyles}>
@@ -144,64 +129,39 @@ export default function SalesTrackingForm() {
             className={classes.textarea}
             mb="md"
           />
-          {/* <div> */}
-          <Paper p="xs" className={classes.subHeader}>
-            Enter Customer Details
-          </Paper>
-          {/* <Box my="xl"></Box> */}
-          <Group grow>
-            <TextInput
-              label={
-                <span className={classes.labelStyles}>Enter Customer Name</span>
-              }
-              placeholder="Customer Name"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
-            />
-            <TextInput
-              label={
-                <span className={classes.labelStyles}>
-                  Enter Customer Phone Number
-                </span>
-              }
-              placeholder="Customer Phone Number"
-              value={customerPhone}
-              onChange={(e) => setCustomerPhone(e.target.value)}
-            />
-            <TextInput
-              label={
-                <span className={classes.labelStyles}>Customer Address</span>
-              }
-              placeholder="Customer Address"
-              value={customerAddress}
-              onChange={(e) => setCustomerAddress(e.target.value)}
-            />
-          </Group>
-
-          <Box my="xl" mb="md"></Box>
-          <Paper p="xs" className={classes.subHeader}>
-            Enter Menu
-          </Paper>
-          {/* Labels for menu item fields */}
+          <CustomerDetails
+            customerName={customerName}
+            setCustomerName={setCustomerName}
+            customerPhone={customerPhone}
+            setCustomerPhone={setCustomerPhone}
+            customerAddress={customerAddress}
+            setCustomerAddress={setCustomerAddress}
+          />
           <Box my="xl" mb="md">
-            {/* Header Row */}
+            <Paper p="xs" className={classes.subHeader}>
+              Enter Menu
+            </Paper>
             <Box mb="md">
               {items.map((item, index) => (
-                <Group key={index} mb="sm" className={classes.flexGroup}>
-                  <TextInput
-                    placeholder="Menu Item"
-                    value={item.menuItem}
-                    onChange={(e) =>
-                      handleItemChange(index, "menuItem", e.target.value)
-                    }
-                    required
-                    style={{ flex: 3 }}
+                <Group key={index}  >
+                  <MenuItemSelector
+                    index={index}
+                    menuItem={item.menuItem}
+                    groupedMenuItems={groupedMenuItems}
+                    handleItemChange={handleItemChangeWrapper}
                   />
                   <NumberInput
                     placeholder="Quantity"
                     value={item.quantity}
                     onChange={(value) =>
-                      handleItemChange(index, "quantity", value || 0)
+                      handleItemChange(
+                        index,
+                        "quantity",
+                        value || 0,
+                        items,
+                        setItems,
+                        calculateTotalAmount
+                      )
                     }
                     min={1}
                     required
@@ -211,18 +171,33 @@ export default function SalesTrackingForm() {
                     placeholder="Unit Price"
                     value={item.unitPrice}
                     onChange={(value) =>
-                      handleItemChange(index, "unitPrice", value || 0)
+                      handleItemChange(
+                        index,
+                        "unitPrice",
+                        value || 0,
+                        items,
+                        setItems,
+                        calculateTotalAmount
+                      )
                     }
                     min={0}
                     step={1}
                     required
                     style={{ flex: 1 }}
                   />
+
                   <NumberInput
                     placeholder="Total amount of the item"
                     value={item.totalItemPrice}
                     onChange={(value) =>
-                      handleItemChange(index, "totalItemPrice", value || 0)
+                      handleItemChange(
+                        index,
+                        "totalItemPrice",
+                        value || 0,
+                        items,
+                        setItems,
+                        calculateTotalAmount
+                      )
                     }
                     min={0}
                     step={1}
@@ -231,14 +206,14 @@ export default function SalesTrackingForm() {
                   />
                   <ActionIcon
                     variant="light"
-                    onClick={addItemRow}
+                    onClick={() => addItemRow(items, setItems)}
                     style={{ flex: 0.5 }}
                   >
                     <IconPlus size={25} />
                   </ActionIcon>
                   <ActionIcon
                     variant="light"
-                    onClick={() => deleteItemRow(index)}
+                    onClick={() => deleteItemRow(index, items, setItems)}
                     style={{ flex: 0.5 }}
                   >
                     <IconTrash size={25} />
@@ -247,19 +222,13 @@ export default function SalesTrackingForm() {
               ))}
             </Box>
           </Box>
-
           <NumberInput
             label="Total Amount"
             value={totalAmount}
             readOnly
             mb="md"
-            // parser={(value: string) => value.replace(/\$\s?|(,*)/g, "")}
-            // formatter={(value: any) =>
-            //   `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            // }
             className={classes.totalAmount}
           />
-
           <NumberInput
             label="Discount on Overall Transaction (%)"
             value={discount}
@@ -270,10 +239,7 @@ export default function SalesTrackingForm() {
             required
             mb="md"
             className={classes.discountInput}
-            // width={}
-            // style={"width": "10px;"}
           />
-
           <Group className={classes.buttonGroup}>
             <Button
               type="button"

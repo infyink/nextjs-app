@@ -2,7 +2,7 @@
 import { Button, Group } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useSearchParams } from 'next/navigation';
-import { useUrlSearchParams } from '../hooks/use-update-url-search-param';
+import { useUrlSearchParams } from '../../hooks/use-update-url-search-param';
 import { ApplyBtn } from './ApplyBtn';
 
 

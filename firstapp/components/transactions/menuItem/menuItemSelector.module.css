@@ -1,0 +1,142 @@
+/* Style for the select container */
+.selectContainer {
+    width: 100%;
+    max-width: 300px; 
+    margin: 0 auto; 
+    display: flex; 
+    justify-content: center; 
+    position: relative;
+  }
+  
+  .categoryOption {
+    background-color: #f0f0f0; 
+    font-weight: bold;
+  }
+
+
+  .subcategoryOption {
+    background-color: #e0e0e0; /* Example subcategory background */
+    font-style: italic;
+  }
+
+
+  .itemOption {
+    background-color: #ffffff; /* Example item background */
+    padding-left: 20px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+  }
+  
+
+  
+  
+  .input {
+    margin: 0;
+    padding: 0;
+    width: 100%; 
+    /* box-sizing: border-box;  */
+  }
+  
+  .indicator {
+    color: #333;
+  }
+  
+  .control {
+    border: 1px solid #ddd;
+    box-shadow: none;
+    min-height: 40px;
+    height: 40px;
+    width: 100%; 
+    max-width: 300px; 
+    box-sizing: border-box; 
+    /* display: flex; */
+    align-items: center;
+    overflow: visible; 
+  }
+
+  /* Ensure styles are correctly scoped and applied */
+  .customOption {
+    padding: 8px 12px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    align-items: center;
+    color: #333;
+  }
+    /* Style for the custom dropdown items */
+  /* .customOption {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+    white-space: nowrap; 
+    overflow: visible; 
+    text-overflow: ellipsis; 
+  } */
+  .singleValue {
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    align-items: center;
+    display: flex;
+  }
+ 
+  /* Container for the select component */
+.basic-select {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+/* Basic Styles for react-select */
+.react-select__control {
+    border: 1px solid #ddd;
+    box-shadow: none;
+    min-height: 40px;
+    height: 40px;
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Single value display */
+  .react-select__single-value {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Custom option styling */
+  .react-select__option {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  /* Specific styling based on type */
+  .react-select__option--category {
+    font-weight: bold;
+    background-color: #f7f7f7;
+  }
+  
+  .react-select__option--subcategory {
+    font-style: italic;
+    background-color: #f0f0f0;
+  }
+  
+  .react-select__option--item {
+    padding-left: 20px;
+  }
+  
+  /* Menu dimensions */
+  .react-select__menu {
+    font-size: 14px;
+    width: 100%;
+    max-width: 300px;
+  }

@@ -1,87 +1,125 @@
 /* salesroom.module.css */
 .container {
-    margin-top: 2rem;
-  }
-  
-  .card {
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .formBox {
-    margin-bottom: 1rem;
-  }
-  
-  .flexGroup {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: auto;
-  }
-  
-  .textarea {
-    width: 100%;
-    min-height: 100px;
-  }
-  
-  .totalAmount {
-    margin-bottom: 1rem;
-  }
-  
-  .discountInput {
-    margin-bottom: 1rem;
-  }
-  
-  .buttonGroup {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-  }
-  
-  .labelStyles{
-    color: gray;
-    font-style: italic;
-    justify-content: flex-end;
-  }
+  margin-top: 2rem;
+}
 
-  .header {
-    font-size: 24px;
-    font-weight: bold;
-    color: #3a6bff;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .subHeader {
-    text-shadow: 0 0 3px #ff0000, 0 0 5px #0000ff;
-    font-size: 20px;
-    font-weight: bold;
-    color: #8338ec;
-    margin-bottom: 10px;
-    /* margin-top: 10px; */
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-  }
+.card {
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+.formBox {
+  margin-bottom: 1rem;
+}
 
+.flexGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: auto;
+}
 
-  .menuItemLabels {
-    display: flex;
-    margin-bottom: 16px;
-  }
-  
-  .inputGroup {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex: 1;
-  }
-  
-  .inputLabel {
-    flex: 1;
-    font-weight: bold;
-    color: gray;
-    font-style: italic;
-    font-size: 0.75rem; /* Smaller font size */
-    text-align: center; /* Center-align labels */
-  }
+.textarea {
+  width: 100%;
+  min-height: 100px;
+}
+
+.totalAmount {
+  margin-bottom: 1rem;
+}
+
+.discountInput {
+  margin-bottom: 1rem;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.labelStyles {
+  color: gray;
+  font-style: italic;
+  justify-content: flex-end;
+}
+
+.header {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3a6bff;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subHeader {
+  text-shadow: 0 0 3px #ff0000, 0 0 5px #0000ff;
+  font-size: 20px;
+  font-weight: bold;
+  color: #8338ec;
+  margin-bottom: 10px;
+  /* margin-top: 10px; */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.menuItemLabels {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.inputLabel {
+  flex: 1;
+  font-weight: bold;
+  color: gray;
+  font-style: italic;
+  font-size: 0.75rem; /* Smaller font size */
+  text-align: center; /* Center-align labels */
+}
+
+/* Style for the select container */
+.selectContainer {
+  width: 100%;
+  max-width: 300px; /* Adjust the max-width as needed */
+  margin: 0 auto; /* Center the select container */
+}
+
+/* Style for the custom dropdown items */
+.customOption {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Category style */
+.categoryOption {
+  font-weight: bold;
+  background-color: #f7f7f7;
+}
+
+/* Subcategory style */
+.subcategoryOption {
+  font-style: italic;
+  background-color: #f0f0f0;
+}
+
+/* Item style */
+.itemOption {
+  padding-left: 20px;
+}
+
+/* Style for selected item */
+.singleValue {
+  font-size: 14px;
+  font-weight: normal;
+  color: #333;
+}

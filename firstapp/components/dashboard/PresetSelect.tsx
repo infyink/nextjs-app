@@ -3,10 +3,10 @@
 import { Select } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useUrlSearchParams } from '../hooks/use-update-url-search-param';
-import { Preset } from '../types';
-import { getDateRangeByPreset, getPresetByDateRange } from '../functions/get-dates-range';
-import { presets } from '../consts';
+import { useUrlSearchParams } from '../../hooks/use-update-url-search-param';
+import { Preset } from '../../types';
+import { getDateRangeByPreset, getPresetByDateRange } from '../../functions/get-dates-range';
+import { presets } from '../../consts';
 
 export const PresetsSelect = () => {
   const [preset, setPreset] = useState('');

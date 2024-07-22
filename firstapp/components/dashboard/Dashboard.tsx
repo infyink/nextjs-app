@@ -4,8 +4,9 @@ import DateRange from './DateRange';
 import { Suspense } from 'react';
 import { PresetsSelect } from './PresetSelect';
 import { ResultNotice } from './ResultNotice';
-import { Stats } from './Stats/stats';
+import { Stats } from '../Stats/stats';
 import { TransactionsLabelSelect } from './TransactionsLabelSelect';
+
 
 // import { PieChart } from './PieChart';
 
